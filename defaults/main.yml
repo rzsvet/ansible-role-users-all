@@ -1,0 +1,5 @@
+---
+debug: false
+users: { name: user, private: ["none"], public: ["none"] }
+add_private: false
+add_public: false

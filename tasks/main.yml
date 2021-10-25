@@ -1,0 +1,49 @@
+---
+# Section for debug
+- name: "Debug: Show informations"
+  debug:
+    msg:
+      - "{{ groups }}"
+      - "{{ group_names }}"
+      - "{{ user.name  }}"
+      - "{{ user.private }}"
+      - "{{ user.public }}"
+      - "{{ add_private }}"
+      - "{{ add_public }}"
+  when: debug
+- name: "Debug:Add private key for {{ user.name }}"
+  debug:
+    msg: "Private key"
+  when: add_private and debug
+- name: "Debug: Add public key for {{ user.name }}"
+  debug:
+    msg: "public key"
+  when: add_public and debug
+
+# Section for run
+- name: "Create {{ user.name }}"
+  ansible.builtin.user:
+    name: "{{ user.name }}"
+    state: present
+  when: ((add_public) or (add_private)) and not debug
+- name: "Create folder /home/{{ user.name}}/.ssh for keys"
+  ansible.builtin.file:
+    path: /home/{{ user.name}}/.ssh
+    state: directory
+    mode: "0755"
+  when: ((add_public) or (add_private)) and not debug
+- name: "Add public key for {{ user.name }}"
+  authorized_key:
+    user: "{{ user.name }}"
+    state: present
+    key: "{{ ssh_public_key  }}"
+  when: add_public and not debug
+- name: "Add private key for {{ user.name }}"
+  copy:
+    content: "{{ ssh_private_key }}"
+    dest: "/home/{{ user.name }}/.ssh/id_rsa"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: 0700
+  no_log: true
+  when: add_private and not debug
