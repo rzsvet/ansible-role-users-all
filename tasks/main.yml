@@ -26,7 +26,7 @@
     name: "{{ user.name }}"
     state: present
   when: ((add_public) or (add_private)) and not debug
-- name: "Create folder /home/{{ user.name}}/.ssh for keys"
+- name: "Create folder /home/{{ user.name }}/.ssh for keys"
   ansible.builtin.file:
     path: /home/{{ user.name}}/.ssh
     state: directory
