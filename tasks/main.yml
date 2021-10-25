@@ -28,7 +28,7 @@
   when: ((add_public) or (add_private)) and not debug
 - name: "Create folder /home/{{ user.name }}/.ssh for keys"
   ansible.builtin.file:
-    path: /home/{{ user.name}}/.ssh
+    path: /home/{{ user.name }}/.ssh
     state: directory
     mode: "0755"
   when: ((add_public) or (add_private)) and not debug
